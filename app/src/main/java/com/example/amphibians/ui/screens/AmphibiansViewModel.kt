@@ -52,7 +52,9 @@ class AmphibiansViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as AmphibiansApplication)
                 val amphibiansRepository = application.container.amphibiansRepository
-                AmphibiansViewModel(amphibiansRepository)
+                val viewModel = AmphibiansViewModel(amphibiansRepository)
+                viewModel.getAmphibians()
+                viewModel
             }
         }
     }

@@ -2,9 +2,12 @@ package com.example.amphibians.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,7 +41,7 @@ fun HomeScreen(
 ) {
     when(amphibiansUiState) {
         is AmphibiansUiState.Success -> AmphibiansGridScreen(amphibiansUiState.amphibians)
-        is AmphibiansUiState.Loading -> LoadingScreen()
+        is AmphibiansUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
         is AmphibiansUiState.Error -> ErrorScreen(retryAction)
     }
 }
@@ -83,20 +86,22 @@ fun AmphibiansGridScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
+        columns = GridCells.Fixed(1),
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
     ) {
+
         items(items = amphibians, key = { amphibian -> amphibian.name }) { amphibian ->
             AmphibianCard(
                 amphibian,
                 modifier = modifier
                     .padding(4.dp)
                     .fillMaxWidth()
-                    .aspectRatio(1.5f)
-            )
+                    .aspectRatio(0.98f)
+    )
         }
     }
+
 }
 
 @Composable
@@ -107,9 +112,9 @@ fun AmphibianCard(amphibian: Amphibian, modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Text(
-            text = amphibian.name,
-            onTextLayout = { }
+            text = amphibian.name
         )
+
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current).data(amphibian.imgSrc)
                 .crossfade(true).build(),
@@ -117,15 +122,19 @@ fun AmphibianCard(amphibian: Amphibian, modifier: Modifier = Modifier) {
             placeholder = painterResource(R.drawable.loading_img),
             contentDescription = stringResource(R.string.amphibian),
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f)
         )
-        Text(
-            text = amphibian.description,
-            onTextLayout = { }
-        )
-        Text(
-            text = amphibian.type,
-            onTextLayout = { }
-        )
+        Box(
+            modifier = Modifier.aspectRatio(2f).padding(bottom = 2.dp)
+        ) {
+            Text(
+                text = (amphibian.description + '\n' + amphibian.type)
+            )
+
+        }
+
     }
 }
+
